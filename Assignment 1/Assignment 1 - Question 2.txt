@@ -1,0 +1,56 @@
+CREATE TABLE Treatment
+(
+TreatID NUMBER,
+TreatCost NUMBER(10,2),
+TreatDesc VARCHAR2(200),
+CONSTRAINT CheckTreatCost CHECK(TreatCost >= 50.00),
+CONSTRAINT TreatmentPK PRIMARY KEY(TreatID)
+);
+
+CREATE TABLE Department
+(
+PhysDept NUMBER,
+DeptSupervisiorID NUMBER,
+CONSTRAINT DepartmentPK PRIMARY KEY(PhysDept)
+);
+
+CREATE TABLE Physician
+(
+PhysID NUMBER,
+PhysName VARCHAR2(50) NOT NULL,
+PhysDept NUMBER,
+CONSTRAINT PhysicianFK FOREIGN KEY(PhysDept)
+	REFERENCES Department(PhysDept),
+CONSTRAINT PhysicianPK PRIMARY KEY(PhysID)
+);
+
+CREATE TABLE Room
+(
+RoomNo NUMBER,
+RoomPhone VARCHAR2(8),
+RoomRate NUMBER(10,2),
+CONSTRAINT CheckRoom CHECK(RoomNo >= 100 AND RoomNo<=999),
+CONSTRAINT CheckRoomRate CHECK(RoomRate >= 30.00 AND RoomRate <=100.00),
+CONSTRAINT RoomPK PRIMARY KEY(RoomNo)
+);
+
+CREATE TABLE Patient
+(
+PatientID NUMBER,
+PatientName VARCHAR2(50) NOT NULL,
+PatientAddress VARCHAR2(200) NOT NULL,
+AdminDate DATE,
+HospitalStayDays NUMBER,
+PhysID NUMBER,
+RoomNo NUMBER,
+TreatID NUMBER,
+CONSTRAINT CheckRoomNo CHECK(RoomNo >= 100 AND RoomNo<=999),
+CONSTRAINT CheckHospitalStayDays CHECK(HospitalStayDays >= 0),
+CONSTRAINT PatientPhysID FOREIGN KEY(PhysID)
+	REFERENCES Physician(PhysID),
+CONSTRAINT PatientRoomNo FOREIGN KEY(RoomNo)
+	REFERENCES Room(RoomNo),
+CONSTRAINT PatientTreatID FOREIGN KEY(TreatID)
+	REFERENCES Treatment(TreatID),
+CONSTRAINT PatientPK PRIMARY KEY(PatientID)
+);

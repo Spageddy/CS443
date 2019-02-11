@@ -1,0 +1,85 @@
+CREATE TABLE Customer
+(
+cNum NUMBER,
+cSSN CHAR(9) NOT NULL,
+cName VARCHAR2(50),
+cCreditCart VARCHAR2(25),
+cAdd VARCHAR2(20),
+cStartDate DATE,
+cEndDate DATE,
+cAmtOwing NUMBER(7,1),
+hNum NUMBER,
+CONSTRAINT CustomerPK PRIMARY KEY(cNum),
+CONSTRAINT CustomerSSNUnique UNIQUE(cSSN),
+CONSTRAINT CheckSSN CHECK(cSSN >660000000 AND cSSN <= 609999999)
+);
+CREATE TABLE Hotel
+(
+hNum NUMBER,
+hNoOfRooms NUMBER,
+hPhone CHAR(7) NOT NULL,
+hAdd VARCHAR2(50),
+mId NUMBER,
+CONSTRAINT HotelPK PRIMARY KEY(hNum),
+CONSTRAINT HotelPhoneUnique UNIQUE(hPhone),
+CONSTRAINT CheckNoOfRooms CHECK(hNoOfRooms > 0 AND hNoOfRooms <= 200),
+CONSTRAINT CheckPhone CHECK(hPhone >= 2202222 AND hPhone <= 9909999)
+);
+CREATE TABLE Room
+(
+hNum NUMBER,
+rNum NUMBER,
+rRate NUMBER(5,2),
+rSize Number,
+rOccupied CHAR(5),
+rLoc NUMBER,
+cNum NUMBER,
+CONSTRAINT RoomPk PRIMARY KEY(hNum,rNum),
+CONSTRAINT CheckRoomNum CHECK(rNum > 0 AND rNum <= 200),
+CONSTRAINT CheckRoomRate CHECK(rRate >= 50),
+CONSTRAINT CheckRoomSize CHECK(rSize >= 2 AND rSize <= 4),
+CONSTRAINT CheckRoomOccupied CHECK(rOccupied = ‘false’ AND rOccupied = ‘true’),
+CONSTRAINT CheckRoomLoc CHECK(rLoc > 0 AND rLoc <= 100)
+);
+CREATE TABLE Manager
+(
+mId NUMBER,
+mName VARCHAR2(50),
+mAdd VARCHAR2(50),
+mPhone CHAR(7),
+mEmail VARCHAR2(100),
+mSal NUMBER(7,2),
+CONSTRAINT ManagerPK PRIMARY KEY(mId),
+CONSTRAINT CheckManagerId CHECK(mId >= 111111 AND mId <= 999999),
+CONSTRAINT CheckManagerPhone CHECK(mPhone >= 2222222 AND mPhone <= 9999999)
+);
+CREATE TABLE Caretaker
+(
+ctId NUMBER,
+ctName VARCHAR2(50),
+ctAdd VARCHAR2(50),
+ctPhone CHAR(7),
+ctEmail VARCHAR2(200),
+ctSal NUMBER(7,2),
+hNum NUMBER,
+CONSTRAINT CaretakerPK PRIMARY KEY(ctId),
+CONSTRAINT CheckCaretakerId CHECK(ctId >= 111111 AND ctId <= 999999),
+CONSTRAINT CheckCaretakerPhone CHECK(ctPhone >= 2222222 AND ctPhone <= 9999999),
+CONSTRAINT CheckCaretakerSal CHECK(ctSal > 20000 AND ctSal < 40000)
+);
+
+ALTER TABLE Customer
+ADD CONSTRAINT CustomerFK FOREIGN KEY(hNum)
+	REFERENCES Hotel(hNum);
+
+ALTER TABLE Hotel
+ADD CONSTRAINT HotelFK FOREIGN KEY(mId)
+	REFERENCES Manager(mId);
+
+ALTER TABLE Room
+ADD CONSTRAINT RoomFK FOREIGN KEY(cNum)
+	REFERENCES Customer(cNum);
+
+ALTER TABLE Caretaker
+ADD CONSTRAINT CaretakerFK FOREIGN KEY(hNum)
+	REFERENCES Hotel(hNum);
